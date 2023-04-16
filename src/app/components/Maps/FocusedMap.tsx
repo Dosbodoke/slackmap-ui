@@ -1,36 +1,25 @@
 import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Map as ReactMapGL,
-  Source,
-  Layer,
-  MapLayerMouseEvent,
   ScaleControl,
   MapboxGeoJSONFeature,
 } from 'react-map-gl';
 import type { MapRef } from 'react-map-gl';
 import {
-  isCursorInteractableLayer,
   isMouseHoverableLayer,
   lineLabelLayer,
   lineLayer,
   pointLabelLayer,
   pointLayer,
   polygonLayer,
-  unclusteredPointLayer,
 } from './layers';
 import { MapImage } from './Components/MapImage';
-import {
-  calculateBounds,
-  fitMapToGeoJson,
-  parseMapFeature,
-  pointsGeoJsonDict,
-} from './mapUtils';
+import { fitMapToGeoJson } from './mapUtils';
 import { FeatureCollection } from '@turf/turf';
 import {
   defaultMapSettings,
   defaultMapViewState,
-  MAPBOX_TOKEN,
   mapStyles,
 } from './constants';
 import { FocusedButton } from './Components/FocusButton';

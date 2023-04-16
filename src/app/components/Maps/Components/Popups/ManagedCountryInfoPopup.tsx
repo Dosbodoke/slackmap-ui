@@ -86,7 +86,10 @@ export const ManagedCountryInfoPopup = (props: Props) => {
               ISA Members below have rights to edit & delete the features inside
               the marked region.
             </Typography>
-            <Stack spacing={1} sx={{ maxHeight: '33vh', overflow: 'scroll' }}>
+            <Stack
+              spacing={1}
+              sx={{ maxHeight: { xs: '33vh', lg: '66vh' }, overflow: 'scroll' }}
+            >
               {organizations.map(organization => (
                 <Typography
                   key={organization.id}

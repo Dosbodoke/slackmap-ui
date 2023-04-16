@@ -63,6 +63,9 @@ export function App() {
         if (path.includes('/guide')) {
           path = '/guide';
         }
+        if (path.includes('/x/')) {
+          path = '/legacy';
+        }
         return origin + path;
       },
     });
