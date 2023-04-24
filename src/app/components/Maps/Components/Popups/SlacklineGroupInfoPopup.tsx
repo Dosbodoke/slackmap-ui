@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
+import EmailIcon from '@mui/icons-material/Email';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import LinkIcon from '@mui/icons-material/Link';
 
-import { lineApi } from 'app/api/line-api';
 import { LoadingIndicator } from 'app/components/LoadingIndicator';
 import { format } from 'date-fns';
-import { Box, Button, Menu, MenuItem, Typography } from '@mui/material';
+import { Box, Button, Link, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Stack } from '@mui/system';
-import { SlacklineDetailRestrictionField } from 'app/components/TextFields/SlacklineDetailRestrictionField';
-import { SlacklineDetailSpecsField } from 'app/components/TextFields/SlacklineDetailSpecsField';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import { spotApi } from 'app/api/spot-api';
-import { SlacklineDetailInfoField } from '../../../TextFields/SlacklineDetailInfoField';
 import { appColors } from 'styles/theme/colors';
 
 const groupEditGoogleFormUrl =
@@ -27,12 +27,14 @@ interface GroupInfo {
   name: string;
   lat: number;
   lng: number;
-  link?: string;
-  email?: string;
-  members?: number;
-  isRegional?: boolean;
   createdDateTime: string;
   updatedDateTime: string;
+  email?: string;
+  facebook?: string;
+  telegram?: string;
+  instagram?: string;
+  whatsapp?: string;
+  webpage?: string;
 }
 interface Props {
   id: string;
@@ -65,8 +67,19 @@ export const SlacklineGroupInfoPopup = (props: Props) => {
     });
   }, [props.id]);
 
-  let title = group?.name || 'Unknown Name';
-  title = title + (group?.isRegional ? ' (Regional)' : '');
+  const InfoField = (props: { icon: any; url?: string; text?: string }) => {
+    if (!props.url || !props.text) {
+      return null;
+    }
+    return (
+      <Stack direction={'row'} spacing={1} alignItems="center">
+        <props.icon color="primary" />
+        <Link href={props.url} target="_blank" rel="noopener">
+          {props.text}
+        </Link>
+      </Stack>
+    );
+  };
 
   return (
     <Card
@@ -91,21 +104,45 @@ export const SlacklineGroupInfoPopup = (props: Props) => {
                 G
               </Avatar>
             }
-            title={title}
+            title={group.name}
             subheader={`Last updated: ${format(
               new Date(group.updatedDateTime ?? group.createdDateTime),
               'dd MMM yyyy',
             )}`}
           />
           <CardContent component={Stack} spacing={2} sx={{}}>
-            <Box>
-              <Typography variant="body2" color={t => t.palette.text.secondary}>
-                Member Count: <b>{group.members || 'Unknown'}</b>
-              </Typography>
-              <Typography variant="body2" color={t => t.palette.text.secondary}>
-                Email: <b>{group.email || 'Unknown'}</b>
-              </Typography>
-            </Box>
+            <Stack spacing={1}>
+              <InfoField
+                icon={EmailIcon}
+                text={group.email}
+                url={`mailto:${group.email}`}
+              />
+              <InfoField
+                icon={FacebookIcon}
+                text="Facebook Page"
+                url={group.facebook}
+              />
+              <InfoField
+                icon={TelegramIcon}
+                text={'Telegram Group'}
+                url={group.telegram}
+              />
+              <InfoField
+                icon={InstagramIcon}
+                text={'Instagram Page'}
+                url={group.instagram}
+              />
+              <InfoField
+                icon={WhatsAppIcon}
+                text={'WhatsApp Group'}
+                url={group.whatsapp}
+              />
+              <InfoField
+                icon={LinkIcon}
+                text={'Web Page'}
+                url={group.webpage}
+              />
+            </Stack>
 
             <Typography
               variant="caption"
@@ -129,27 +166,17 @@ export const SlacklineGroupInfoPopup = (props: Props) => {
               otherwise fill in the form by clicking on the "Modify" button.
             </Typography>
           </CardContent>
-          {group.link && (
-            <CardActions sx={{ justifyContent: 'center', padding: 2 }}>
-              <Button
-                variant="contained"
-                href={group.link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Visit Page
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                href={groupEditGoogleFormUrl + encodeURIComponent(group.name)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Modify
-              </Button>
-            </CardActions>
-          )}
+          <CardActions sx={{ justifyContent: 'center', padding: 2 }}>
+            <Button
+              variant="contained"
+              color="error"
+              href={groupEditGoogleFormUrl + encodeURIComponent(group.name)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Modify
+            </Button>
+          </CardActions>
         </>
       )}
     </Card>
